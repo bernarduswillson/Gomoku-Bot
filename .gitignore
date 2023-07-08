@@ -1,0 +1,11 @@
+*.pyc
+__pycache__/
+bots/Bot13521995.py
+bots/Bot13521996.py
+bots/Bot13521997.py
+bots/Bot13521998.py
+bots/Bot13521999.py
+client_secret.json
+util/
+tournament.py
+token.json
