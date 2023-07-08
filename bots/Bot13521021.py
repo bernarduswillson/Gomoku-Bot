@@ -2,7 +2,7 @@ import random
 from game import Board
 import globals as globals
 
-class Bot13521xxx(object):
+class Bot13521021(object):
     """
     Bot player
     """
@@ -13,7 +13,7 @@ class Bot13521xxx(object):
         """
             TODO: Ganti dengan NIM kalian
         """
-        self.NIM = "13521xxx"
+        self.NIM = "13521021"
         self.blockedFour = []
         self.blockedThree = []
         self.blockedGap = []
@@ -82,16 +82,22 @@ class Bot13521xxx(object):
             
         # check if can 5 in a row, if yes, do it
         # gap
-        isWin, type, moves = self.isGap(board, self.player)
+        isWin, type, moves = self.fillGap(board, self.player)
         if isWin:
             moveNum = moves[0]
             moveCoor = board.move_to_location(moveNum)
             valid = self.isValid(board, moveNum)
             if valid:
                 return f"{moveCoor[0]},{moveCoor[1]}"
+        # 4 in a row
+        isWin, type, moves = self.isFour(board, self.player)
+        if isWin:
+            fill = self.fillFour(board, moves, type)
+            if fill != None:
+                return fill
             
         # check if opponent's gap can cause 5 in a row, if yes, block it
-        isGap, gap, moves = self.isGap(board, 3 - self.player)
+        isGap, gap, moves = self.fillGap(board, 3 - self.player)
         if isGap:
             moveNum = gap
             moveCoor = board.move_to_location(moveNum)
@@ -103,220 +109,20 @@ class Bot13521xxx(object):
         # check if opponent is 4 in a row
         isFour, type, moves = self.isFour(board, 3 - self.player)
         if isFour:
-            if type == "h":
-                # left edge
-                if moves[0] % 8 == 0:
-                    moveNum = moves[3] + 1
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # middle and right edge
-                else:
-                    moveNum = moves[0] - 1
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                    else:
-                        moveNum = moves[3] + 1
-                        moveCoor = board.move_to_location(moveNum)
-                        valid = self.isValid(board, moveNum)
-                        if valid:
-                            self.blockedFour.append(moves)
-                            return f"{moveCoor[0]},{moveCoor[1]}"
-                
-            elif type == "v":
-                # bottom edge
-                if moves[0] < 8:
-                    moveNum = moves[3] + 8
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # middle and top edge
-                else:
-                    moveNum = moves[0] - 8
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                    else:
-                        moveNum = moves[3] + 8
-                        moveCoor = board.move_to_location(moveNum)
-                        valid = self.isValid(board, moveNum)
-                        if valid:
-                            self.blockedFour.append(moves)
-                            return f"{moveCoor[0]},{moveCoor[1]}"
-                
-            elif type == "d":
-                # bottom left edge
-                if moves[0] == 0:
-                    moveNum = moves[3] + 9
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    print("botleft")
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # bottom right edge
-                elif moves[0] == 7:
-                    moveNum = moves[3] + 7
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    print("botright")
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # top left edge
-                elif moves[3] == 56:
-                    moveNum = moves[0] - 7
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    print("MASUK SINI topleft")
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # top right edge
-                elif moves[3] == 63:
-                    moveNum = moves[0] - 9
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    print("topright")
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # middle ascending
-                elif moves[0] + 9 == moves[1]:
-                    moveNum = moves[0] - 9
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    print("ascending")
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # middle descending
-                elif moves[0] + 7 == moves[1]:
-                    moveNum = moves[0] - 7
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    print("descending")
-                    if valid:
-                        self.blockedFour.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
+            fill = self.fillFour(board, moves, type)
+            if fill != None:
+                return fill
                     
         # check if opponent is 3 in a row
         isThree, type, moves = self.isThree(board, 3 - self.player)
         if isThree:
-            if type == "h":
-                # right edge
-                if moves[0] % 8 == 7:
-                    moveNum = moves[0] - 1
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # middle and left edge
-                else:
-                    moveNum = moves[2] + 1
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                    else:
-                        moveNum = moves[0] - 1
-                        moveCoor = board.move_to_location(moveNum)
-                        valid = self.isValid(board, moveNum)
-                        if valid:
-                            self.blockedThree.append(moves)
-                            return f"{moveCoor[0]},{moveCoor[1]}"
-                
-            elif type == "v":
-                # top edge
-                if moves[2] > 55:
-                    moveNum = moves[0] - 8
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # middle and bottom edge
-                else:
-                    moveNum = moves[2] + 8
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                    else:
-                        moveNum = moves[0] - 8
-                        moveCoor = board.move_to_location(moveNum)
-                        valid = self.isValid(board, moveNum)
-                        if valid:
-                            self.blockedThree.append(moves)
-                            return f"{moveCoor[0]},{moveCoor[1]}"
-                
-            elif type == "d":
-                # bottom left edge
-                if moves[0] == 0:
-                    moveNum = moves[2] + 9
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # bottom right edge
-                elif moves[0] == 7:
-                    moveNum = moves[2] + 7
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # top left edge
-                elif moves[2] == 56:
-                    moveNum = moves[0] - 7
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # top right edge
-                elif moves[2] == 63:
-                    moveNum = moves[0] - 9
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # middle ascending
-                elif moves[0] + 9 == moves[1]:
-                    moveNum = moves[0] - 9
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
-                # middle descending
-                elif moves[0] + 7 == moves[1]:
-                    moveNum = moves[0] - 7
-                    moveCoor = board.move_to_location(moveNum)
-                    valid = self.isValid(board, moveNum)
-                    if valid:
-                        self.blockedThree.append(moves)
-                        return f"{moveCoor[0]},{moveCoor[1]}"
+            fill = self.fillThree(board, moves, type)
+            if fill != None:
+                return fill
 
         # if there is no winning or blocking move, put in random    
         x = random.randint(0, board.height - 1)
         y = random.randint(0, board.width - 1)
-        # print all availables
-        # print(board.availables)
         return f"{x},{y}"
     
     # check if there is 3 in a row
@@ -363,6 +169,110 @@ class Bot13521xxx(object):
                     return True, "d", [move, move + 9, move + 18]
                 
         return False, None, None
+    
+    # choose where to fill in 3 in a row
+    def fillThree(self, board: Board, moves: list, type: str):
+        if type == "h":
+            # right edge
+            if moves[0] % 8 == 7:
+                moveNum = moves[0] - 1
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # middle and left edge
+            else:
+                moveNum = moves[2] + 1
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+                else:
+                    moveNum = moves[0] - 1
+                    moveCoor = board.move_to_location(moveNum)
+                    valid = self.isValid(board, moveNum)
+                    if valid:
+                        self.blockedThree.append(moves)
+                        return f"{moveCoor[0]},{moveCoor[1]}"
+            
+        elif type == "v":
+            # top edge
+            if moves[2] > 55:
+                moveNum = moves[0] - 8
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # middle and bottom edge
+            else:
+                moveNum = moves[2] + 8
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+                else:
+                    moveNum = moves[0] - 8
+                    moveCoor = board.move_to_location(moveNum)
+                    valid = self.isValid(board, moveNum)
+                    if valid:
+                        self.blockedThree.append(moves)
+                        return f"{moveCoor[0]},{moveCoor[1]}"
+            
+        elif type == "d":
+            # bottom left edge
+            if moves[0] == 0:
+                moveNum = moves[2] + 9
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # bottom right edge
+            elif moves[0] == 7:
+                moveNum = moves[2] + 7
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # top left edge
+            elif moves[2] == 56:
+                moveNum = moves[0] - 7
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # top right edge
+            elif moves[2] == 63:
+                moveNum = moves[0] - 9
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # middle ascending
+            elif moves[0] + 9 == moves[1]:
+                moveNum = moves[0] - 9
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # middle descending
+            elif moves[0] + 7 == moves[1]:
+                moveNum = moves[0] - 7
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedThree.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+                
+        return None
    
     # check if there is 4 in a row
     def isFour(self, board: Board, player: int):
@@ -410,8 +320,118 @@ class Bot13521xxx(object):
 
         return False, None, None
     
+    # choose where to fill in 4 in a row
+    def fillFour(self, board: Board, moves: list, type: str):
+        if type == "h":
+            # left edge
+            if moves[0] % 8 == 0:
+                moveNum = moves[3] + 1
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # middle and right edge
+            else:
+                moveNum = moves[0] - 1
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+                else:
+                    moveNum = moves[3] + 1
+                    moveCoor = board.move_to_location(moveNum)
+                    valid = self.isValid(board, moveNum)
+                    if valid:
+                        self.blockedFour.append(moves)
+                        return f"{moveCoor[0]},{moveCoor[1]}"
+            
+        elif type == "v":
+            # bottom edge
+            if moves[0] < 8:
+                moveNum = moves[3] + 8
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # middle and top edge
+            else:
+                moveNum = moves[0] - 8
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+                else:
+                    moveNum = moves[3] + 8
+                    moveCoor = board.move_to_location(moveNum)
+                    valid = self.isValid(board, moveNum)
+                    if valid:
+                        self.blockedFour.append(moves)
+                        return f"{moveCoor[0]},{moveCoor[1]}"
+            
+        elif type == "d":
+            # bottom left edge
+            if moves[0] == 0:
+                moveNum = moves[3] + 9
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                print("botleft")
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # bottom right edge
+            elif moves[0] == 7:
+                moveNum = moves[3] + 7
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                print("botright")
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # top left edge
+            elif moves[3] == 56:
+                moveNum = moves[0] - 7
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                print("MASUK SINI topleft")
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # top right edge
+            elif moves[3] == 63:
+                moveNum = moves[0] - 9
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                print("topright")
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # middle ascending
+            elif moves[0] + 9 == moves[1]:
+                moveNum = moves[0] - 9
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                print("ascending")
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+            # middle descending
+            elif moves[0] + 7 == moves[1]:
+                moveNum = moves[0] - 7
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                print("descending")
+                if valid:
+                    self.blockedFour.append(moves)
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+                
+        return None
+    
     # check if gap can cause 5 in a row, returns the gap
-    def isGap(self, board: Board, player: int):
+    def fillGap(self, board: Board, player: int):
         # player's move
         player_moves = []
         for move in board.states:
