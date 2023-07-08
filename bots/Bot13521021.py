@@ -120,6 +120,16 @@ class Bot13521021(object):
             if fill != None:
                 return fill
 
+        # scoring with 2 attempts
+        pos, direction, secondPos, sencondDirection = self.score(board, self.player)
+        fill = self.fillScore(board, pos, self.player, direction)
+        if fill != None:
+            return fill
+        else:
+            fill = self.fillScore(board, secondPos, self.player, sencondDirection)
+            if fill != None:
+                return fill
+
         # if there is no winning or blocking move, put in random    
         x = random.randint(0, board.height - 1)
         y = random.randint(0, board.width - 1)
@@ -141,7 +151,6 @@ class Bot13521021(object):
                 if ((move + 1) % 8 == 0 or (move + 2) % 8 == 0) or ([move, move + 1, move + 2] in self.blockedThree):
                     pass
                 else:
-                    print("horizontal 3")
                     return True, "h", [move, move + 1, move + 2]
             
         # check vertical
@@ -150,7 +159,6 @@ class Bot13521021(object):
                 if ([move, move + 8, move + 16] in self.blockedThree):
                     pass
                 else:
-                    print("vertical 3")
                     return True, "v", [move, move + 8, move + 16]
             
         # check diagonal
@@ -159,13 +167,11 @@ class Bot13521021(object):
                 if ((move + 7) % 8 == 0 or (move + 14) % 8 == 0) or ([move, move + 7, move + 14] in self.blockedThree):
                     pass
                 else:
-                    print("diagonal 3")
                     return True, "d", [move, move + 7, move + 14]
             elif move + 9 in player_moves and move + 18 in player_moves:
                 if ((move + 9) % 8 == 0 or (move + 18) % 8 == 0) or ([move, move + 9, move + 18] in self.blockedThree):
                     pass
                 else:
-                    print("diagonal 3")
                     return True, "d", [move, move + 9, move + 18]
                 
         return False, None, None
@@ -290,7 +296,6 @@ class Bot13521021(object):
                 if ((move + 1) % 8 == 0 or (move + 2) % 8 == 0 or (move + 3) % 8 == 0) or ([move, move + 1, move + 2, move + 3] in self.blockedFour):
                     pass
                 else:
-                    print("horizontal 4")
                     return True, "h", [move, move + 1, move + 2, move + 3]
             
         # check vertical
@@ -299,7 +304,6 @@ class Bot13521021(object):
                 if ([move, move + 8, move + 16, move + 24] in self.blockedFour):
                     pass
                 else:
-                    print("vertical 4")
                     return True, "v", [move, move + 8, move + 16, move + 24]
             
         # check diagonal
@@ -308,14 +312,11 @@ class Bot13521021(object):
                 if ((move + 9) % 8 == 0 or (move + 18) % 8 == 0 or (move + 27) % 8 == 0) or ([move, move + 9, move + 18, move + 27] in self.blockedFour):
                     pass
                 else:
-                    print("diagonal 4")
                     return True, "d", [move, move + 9, move + 18, move + 27]
             if move + 7 in player_moves and move + 14 in player_moves and move + 21 in player_moves:
                 if ([move, move + 7, move + 14, move + 21] in self.blockedFour):
-                    print("diagonal 4 gagal")
                     pass
                 else:
-                    print("diagonal 4")
                     return True, "d", [move, move + 7, move + 14, move + 21]
 
         return False, None, None
@@ -378,7 +379,6 @@ class Bot13521021(object):
                 moveNum = moves[3] + 9
                 moveCoor = board.move_to_location(moveNum)
                 valid = self.isValid(board, moveNum)
-                print("botleft")
                 if valid:
                     self.blockedFour.append(moves)
                     return f"{moveCoor[0]},{moveCoor[1]}"
@@ -387,7 +387,6 @@ class Bot13521021(object):
                 moveNum = moves[3] + 7
                 moveCoor = board.move_to_location(moveNum)
                 valid = self.isValid(board, moveNum)
-                print("botright")
                 if valid:
                     self.blockedFour.append(moves)
                     return f"{moveCoor[0]},{moveCoor[1]}"
@@ -396,7 +395,6 @@ class Bot13521021(object):
                 moveNum = moves[0] - 7
                 moveCoor = board.move_to_location(moveNum)
                 valid = self.isValid(board, moveNum)
-                print("MASUK SINI topleft")
                 if valid:
                     self.blockedFour.append(moves)
                     return f"{moveCoor[0]},{moveCoor[1]}"
@@ -405,7 +403,6 @@ class Bot13521021(object):
                 moveNum = moves[0] - 9
                 moveCoor = board.move_to_location(moveNum)
                 valid = self.isValid(board, moveNum)
-                print("topright")
                 if valid:
                     self.blockedFour.append(moves)
                     return f"{moveCoor[0]},{moveCoor[1]}"
@@ -414,7 +411,6 @@ class Bot13521021(object):
                 moveNum = moves[0] - 9
                 moveCoor = board.move_to_location(moveNum)
                 valid = self.isValid(board, moveNum)
-                print("ascending")
                 if valid:
                     self.blockedFour.append(moves)
                     return f"{moveCoor[0]},{moveCoor[1]}"
@@ -423,7 +419,6 @@ class Bot13521021(object):
                 moveNum = moves[0] - 7
                 moveCoor = board.move_to_location(moveNum)
                 valid = self.isValid(board, moveNum)
-                print("descending")
                 if valid:
                     self.blockedFour.append(moves)
                     return f"{moveCoor[0]},{moveCoor[1]}"
@@ -451,19 +446,16 @@ class Bot13521021(object):
                 if check:
                     pass
                 else:
-                    print("gap horizontal 1")
                     return True, move1, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move3 in player_moves and move4 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap horizontal 2")
                     return True, move2, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move2 in player_moves and move4 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap horizontal 3")
                     return True, move3, [move, move1, move2, move3, move4]
                 
         # check vertical
@@ -477,19 +469,16 @@ class Bot13521021(object):
                 if check:
                     pass
                 else:
-                    print("gap vertical 1")
                     return True, move1, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move3 in player_moves and move4 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap vertical 2")
                     return True, move2, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move2 in player_moves and move4 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap vertical 3")
                     return True, move3, [move, move1, move2, move3, move4]
                 
         # check diagonal
@@ -503,25 +492,21 @@ class Bot13521021(object):
                 if check:
                     pass
                 else:
-                    print("gap diagonal 1")
                     return True, move1, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move3 in player_moves and move4 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap diagonal 2")
                     return True, move2, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move2 in player_moves and move4 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap diagonal 3")
                     return True, move3, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move2 in player_moves and move3 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap diagonal 4")
                     return True, move4, [move, move1, move2, move3, move4]
                 
             move1 = move + 7
@@ -533,27 +518,290 @@ class Bot13521021(object):
                 if check:
                     pass
                 else:
-                    print("gap diagonal 5")
                     return True, move1, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move3 in player_moves and move4 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap diagonal 6")
                     return True, move2, [move, move1, move2, move3, move4]
             elif (move1 in player_moves and move2 in player_moves and move4 in player_moves):
                 if check:
                     pass
                 else:
-                    print("gap diagonal 7")
                     return True, move3, [move, move1, move2, move3, move4]
         
         return False, None, None  
             
+    # score
+    def score(self, board: Board, player: int):
+        # opponent's move -120
+        # player's move +120
+        # available move +60
+        # divide by distance, closer is better
+
+        # player's move
+        player_moves = []
+        for move in board.states:
+            if board.states[move] == player:
+                player_moves.append(move)
+        player_moves.sort()
+
+        # opponent's move
+        opponent_moves = []
+        for move in board.states:
+            if board.states[move] == 3 - player:
+                opponent_moves.append(move)
+        opponent_moves.sort()
+
+        # available moves
+        available_moves = board.availables
+
+        scoreList = []
+
+        for move in player_moves:
+
+            score = 0
+            # check 5 rows rightside
+            rightMoves = []
+            for i in range(1, 5):
+                rightMoves.append(move + i)
+            for i in range(0, 4):
+                if rightMoves[i] in player_moves:
+                    score += 120 / (i + 1)
+                elif rightMoves[i] in opponent_moves:
+                    score -= 120 / (i + 1)
+                elif rightMoves[i] in available_moves:
+                    score += 60 / (i + 1)
+            scoreList.append(score)
+
+            score = 0
+            # check 5 rows leftside
+            leftMoves = []
+            for i in range(1, 5):
+                leftMoves.append(move - i)
+            for i in range(0,4):
+                if leftMoves[i] in player_moves:
+                    score += 120 / (i + 1)
+                elif leftMoves[i] in opponent_moves:
+                    score -= 120 / (i + 1)
+                elif leftMoves[i] in available_moves:
+                    score += 60 / (i + 1)
+            scoreList.append(score)
+
+            score = 0
+            # check 5 rows upside
+            upMoves = []
+            for i in range(1, 5):
+                upMoves.append(move + 8 * i)
+            for i in range(0,4):
+                if upMoves[i] in player_moves:
+                    score += 120 / (i + 1)
+                elif upMoves[i] in opponent_moves:
+                    score -= 120 / (i + 1)
+                elif upMoves[i] in available_moves:
+                    score += 60 / (i + 1)
+            scoreList.append(score)
+
+            score = 0
+            # check 5 rows downside
+            downMoves = []
+            for i in range(1, 5):
+                downMoves.append(move - 8 * i)
+            for i in range(0,4):
+                if downMoves[i] in player_moves:
+                    score += 120 / (i + 1)
+                elif downMoves[i] in opponent_moves:
+                    score -= 120 / (i + 1)
+                elif downMoves[i] in available_moves:
+                    score += 60 / (i + 1)
+            scoreList.append(score)
+
+            score = 0
+            # check 5 rows diagonal uprightside
+            uprightMoves = []
+            for i in range(1, 5):
+                uprightMoves.append(move + 9 * i)
+            for i in range(0,4):
+                if uprightMoves[i] in player_moves:
+                    score += 120 / (i + 1)
+                elif uprightMoves[i] in opponent_moves:
+                    score -= 120 / (i + 1)
+                elif uprightMoves[i] in available_moves:
+                    score += 60 / (i + 1)
+            scoreList.append(score)
+
+            score = 0
+            # check 5 rows diagonal downrightside
+            downrightMoves = []
+            for i in range(1, 5):
+                downrightMoves.append(move - 7 * i)
+            for i in range(0,4):
+                if downrightMoves[i] in player_moves:
+                    score += 120 / (i + 1)
+                elif downrightMoves[i] in opponent_moves:
+                    score -= 120 / (i + 1)
+                elif downrightMoves[i] in available_moves:
+                    score += 60 / (i + 1)
+            scoreList.append(score)
+
+            score = 0
+            # check 5 rows diagonal upleftside
+            upleftMoves = []
+            for i in range(1, 5):
+                upleftMoves.append(move + 7 * i)
+            for i in range(0,4):
+                if upleftMoves[i] in player_moves:
+                    score += 120 / (i + 1)
+                elif upleftMoves[i] in opponent_moves:
+                    score -= 120 / (i + 1)
+                elif upleftMoves[i] in available_moves:
+                    score += 60 / (i + 1)
+            scoreList.append(score)
+
+            score = 0
+            # check 5 rows diagonal downleftside
+            downleftMoves = []
+            for i in range(1, 5):
+                downleftMoves.append(move - 9 * i)
+            for i in range(0,4):
+                if downleftMoves[i] in player_moves:
+                    score += 120 / (i + 1)
+                elif downleftMoves[i] in opponent_moves:
+                    score -= 120 / (i + 1)
+                elif downleftMoves[i] in available_moves:
+                    score += 60 / (i + 1)
+            scoreList.append(score)
+        
+        # find the best move
+        bestMove = 0
+        bestScore = 0
+        for i in range(len(scoreList)):
+            if scoreList[i] > bestScore:
+                bestScore = scoreList[i]
+                bestMove = i
+
+        move = bestMove // 8
+        dir = bestMove % 8
+
+        if dir == 0:
+            direction = "right"
+        elif dir == 1:
+            direction = "left"
+        elif dir == 2:
+            direction = "up"
+        elif dir == 3:
+            direction = "down"
+        elif dir == 4:
+            direction = "upright"
+        elif dir == 5:
+            direction = "downright"
+        elif dir == 6:
+            direction = "upleft"
+        elif dir == 7:
+            direction = "downleft"
+
+        # find second best move
+        secondBestMove = 0
+        secondBestScore = 0
+        for i in range(len(scoreList)):
+            if scoreList[i] > secondBestScore and i != bestMove:
+                secondBestScore = scoreList[i]
+                secondBestMove = i
+
+        secondMove = secondBestMove // 8
+        secondDir = secondBestMove % 8
+
+        if secondDir == 0:
+            secondDirection = "right"
+        elif secondDir == 1:
+            secondDirection = "left"
+        elif secondDir == 2:
+            secondDirection = "up"
+        elif secondDir == 3:
+            secondDirection = "down"
+        elif secondDir == 4:
+            secondDirection = "upright"
+        elif secondDir == 5:
+            secondDirection = "downright"
+        elif secondDir == 6:
+            secondDirection = "upleft"
+        elif secondDir == 7:
+            secondDirection = "downleft"        
+
+        return move, direction, secondMove, secondDirection
+    
+    # fill the board with scoring move
+    def fillScore(self, board: Board, pos: int, player: int, direction: str):
+        # player's move
+        player_moves = []
+        for move in board.states:
+            if board.states[move] == player:
+                player_moves.append(move)
+        player_moves.sort()
+
+        move = player_moves[pos]
+
+        if direction == "right":
+            for i in range(1, 5):
+                moveNum = move + i
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid and moveNum % 8 != 0:
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+        elif direction == "left":
+            for i in range(1, 5):
+                moveNum = move - i
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid and moveNum % 8 != 7:
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+        elif direction == "up":
+            for i in range(1, 5):
+                moveNum = move + 8 * i
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid and moveNum < 64:
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+        elif direction == "down":
+            for i in range(1, 5):
+                moveNum = move - 8 * i
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid and moveNum >= 0:
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+        elif direction == "upright":
+            for i in range(1, 5):
+                moveNum = move + 9 * i
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid and moveNum < 64 and moveNum % 8 != 0:
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+        elif direction == "downright":
+            for i in range(1, 5):
+                moveNum = move - 7 * i
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid and moveNum >= 0 and moveNum % 8 != 0:
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+        elif direction == "upleft":
+            for i in range(1, 5):
+                moveNum = move + 7 * i
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid and moveNum < 64 and moveNum % 8 != 7:
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+        elif direction == "downleft":
+            for i in range(1, 5):
+                moveNum = move - 9 * i
+                moveCoor = board.move_to_location(moveNum)
+                valid = self.isValid(board, moveNum)
+                if valid and moveNum >= 0 and moveNum % 8 != 7:
+                    return f"{moveCoor[0]},{moveCoor[1]}"
+        
+        return None
+            
     
     # check if the move is valid
     def isValid(self, board: Board, move: int) -> bool:
-        print(move)
-        print(board.availables)
         return move in board.availables
 
